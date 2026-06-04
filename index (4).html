@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXIA — La inteligencia que evoluciona contigo</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yue: #a855f7;
+    --yue-light: #d8b4fe;
+    --yue-dark: #6d28d9;
+    --yue-glow: rgba(168,85,247,0.18);
+    --kai: #3b82f6;
+    --kai-light: #93c5fd;
+    --kai-dark: #1d4ed8;
+    --kai-glow: rgba(59,130,246,0.18);
+    --bg: #07080f;
+    --bg2: #0d0f1a;
+    --bg3: #111827;
+    --surface: #141929;
+    --surface2: #1a2035;
+    --border: rgba(255,255,255,0.07);
+    --text: #f1f5f9;
+    --muted: #8892a4;
+    --dim: #4a5568;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ═══ PARTÍCULAS DE FONDO ═══ */
+  #particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    animation: float-particle linear infinite;
+    opacity: 0;
+  }
+  @keyframes float-particle {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+
+  /* ═══ REGISTRO ═══ */
+  #register-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0;
+  }
+  .register-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+  }
+  .register-box {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 52px;
+    width: 440px;
+    max-width: 94vw;
+    text-align: center;
+    backdrop-filter: blur(20px);
+  }
+  .register-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.6rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    background: linear-gradient(135deg, var(--yue-light), var(--yue), var(--kai), var(--kai-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .register-sub {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 36px;
+    letter-spacing: 0.04em;
+  }
+  .reg-avatars {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .reg-avatar {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    border: 2px solid transparent;
+    animation: avatar-pulse 3s ease-in-out infinite;
+  }
+  .reg-avatar.yue { border-color: var(--yue); animation-delay: 0s; }
+  .reg-avatar.kai { border-color: var(--kai); animation-delay: 1.5s; }
+  @keyframes avatar-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(168,85,247,0.3); }
+    50% { box-shadow: 0 0 20px 6px rgba(168,85,247,0.18); }
+  }
+  .form-group {
+    margin-bottom: 18px;
+    text-align: left;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .form-group input {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus { border-color: var(--yue); }
+  .btn-register {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--yue-dark), var(--yue), var(--kai));
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .btn-register:hover { opacity: 0.9; transform: translateY(-1px); }
+  .login-link {
+    margin-top: 16px;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .login-link span {
+    color: var(--yue-light);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* ═══ PANTALLA DE BIENVENIDA ═══ */
+  #welcome-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 9998;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .welcome-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    max-width: 900px;
+    padding: 0 20px;
+    position: relative;
+  }
+  .welcome-character {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    flex: 1;
+    max-width: 340px;
+  }
+  .welcome-character.visible { opacity: 1; transform: translateY(0); }
+  .welcome-avatar-wrap {
+    position: relative;
+    width: 260px; height: 310px;
+  }
+  .welcome-avatar-wrap::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 200px; height: 60px;
+    border-radius: 50%;
+    filter: blur(20px);
+    opacity: 0.5;
+  }
+  .welcome-character.yue .welcome-avatar-wrap::before { background: var(--yue); }
+  .welcome-character.kai .welcome-avatar-wrap::before { background: var(--kai); }
+  .welcome-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    filter: drop-shadow(0 8px 30px rgba(168,85,247,0.3));
+  }
+  .welcome-character.kai .welcome-avatar { filter: drop-shadow(0 8px 30px rgba(59,130,246,0.3)); }
+
+  .speech-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--text);
+    position: relative;
+    max-width: 280px;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    min-height: 56px;
+  }
+  .speech-bubble.show { opacity: 1; transform: scale(1); }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    border: 8px solid transparent;
+  }
+  .welcome-character.yue .speech-bubble { border-color: rgba(168,85,247,0.4); }
+  .welcome-character.yue .speech-bubble::after { left: 50%; transform: translateX(-50%); border-top-color: rgba(168,85,247,0.4); }
+  .welcome-character.kai .speech-bubble { border-color: rgba(59,130,246,0.4); }
+  .welcome-character.kai .speech-bubble::after { left: 50%; transform: translateX(-50%); border-top-color: rgba(59,130,246,0.4); }
+
+  .welcome-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 12px;
+    letter-spacing: 0.15em;
+  }
+  .welcome-character.yue .welcome-name { color: var(--yue-light); }
+  .welcome-character.kai .welcome-name { color: var(--kai-light); }
+
+  .welcome-center {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 0 24px;
+    padding-bottom: 80px;
+    opacity: 0;
+    transition: opacity 0.8s ease 1s;
+  }
+  .welcome-center.show { opacity: 1; }
+  .welcome-title-main {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    background: linear-gradient(135deg, var(--yue-light), var(--yue), var(--kai), var(--kai-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+  .welcome-user-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+  .welcome-divider {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, var(--yue), var(--kai));
+    margin: 16px auto;
+    border-radius: 2px;
+  }
+  .welcome-tagline {
+    font-size: 0.88rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .btn-enter {
+    margin-top: 28px;
+    padding: 13px 36px;
+    border: 1px solid var(--yue);
+    border-radius: 50px;
+    background: transparent;
+    color: var(--yue-light);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-enter:hover { background: var(--yue-glow); }
+
+  /* ═══ NAVBAR ═══ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(7,8,15,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.35rem;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    background: linear-gradient(135deg, var(--yue-light), var(--kai-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--yue-light); }
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .nav-avatar-sm {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--yue), var(--kai));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Orbitron', monospace;
+  }
+
+  /* ═══ MAIN CONTENT ═══ */
+  main {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ═══ HERO ═══ */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--yue), transparent);
+    opacity: 0.15;
+  }
+  .hero-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0;
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 20px;
+    position: relative;
+  }
+  .hero-char {
+    flex: 0 0 280px;
+    position: relative;
+  }
+  .hero-char img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    object-position: top;
+    filter: drop-shadow(0 0 40px rgba(168,85,247,0.25));
+  }
+  .hero-char.kai img { filter: drop-shadow(0 0 40px rgba(59,130,246,0.25)); }
+
+  .hero-center {
+    flex: 1;
+    text-align: center;
+    padding: 0 40px;
+    padding-bottom: 60px;
+  }
+  .hero-eyebrow {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.3em;
+    color: var(--yue);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: 0.1em;
+    background: linear-gradient(135deg, var(--yue-light) 0%, var(--yue) 40%, var(--kai) 70%, var(--kai-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+  }
+  .hero-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 36px;
+  }
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 44px;
+  }
+  .pill {
+    padding: 7px 18px;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    border: 1px solid transparent;
+  }
+  .pill-yue { background: var(--yue-glow); border-color: rgba(168,85,247,0.3); color: var(--yue-light); }
+  .pill-kai { background: var(--kai-glow); border-color: rgba(59,130,246,0.3); color: var(--kai-light); }
+  .pill-neutral { background: rgba(255,255,255,0.04); border-color: var(--border); color: var(--muted); }
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    padding: 14px 36px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, var(--yue-dark), var(--yue));
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+  .btn-secondary {
+    padding: 14px 36px;
+    border-radius: 50px;
+    border: 1px solid rgba(59,130,246,0.4);
+    background: var(--kai-glow);
+    color: var(--kai-light);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+  .btn-secondary:hover { background: rgba(59,130,246,0.15); transform: translateY(-2px); }
+
+  /* ═══ SECCIONES ═══ */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 90px 40px;
+  }
+  .section-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .section-tag {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 50px;
+    margin-bottom: 16px;
+  }
+  .tag-yue { background: var(--yue-glow); color: var(--yue-light); border: 1px solid rgba(168,85,247,0.25); }
+  .tag-kai { background: var(--kai-glow); color: var(--kai-light); border: 1px solid rgba(59,130,246,0.25); }
+  .tag-neutral { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  .section-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 580px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ═══ DIVIDER ═══ */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--yue), var(--kai), transparent);
+    opacity: 0.18;
+    margin: 0;
+  }
+
+  /* ═══ ABOUT (¿QUÉ ES NEXIA?) ═══ */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .about-text h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--yue-light);
+    margin-bottom: 20px;
+  }
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 16px;
+    font-size: 0.95rem;
+  }
+  .about-feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .about-feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.93rem;
+    color: var(--text);
+  }
+  .about-feature-list li::before {
+    content: '';
+    display: block;
+    flex-shrink: 0;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--yue);
+    margin-top: 7px;
+  }
+  .about-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .about-hex {
+    width: 300px; height: 300px;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    background: linear-gradient(135deg, var(--yue-glow), var(--kai-glow));
+    border: 1px solid rgba(168,85,247,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: morphBlob 8s ease-in-out infinite;
+  }
+  /* ============================================================
+     ANIMACIÓN DE PERSONAJES + AURA  (según la "voz" de cada uno)
+     YUE (morado)  -> cálida, empática, "habla con el corazón":
+                      flotación suave tipo respiración / latido.
+     KAI (azul)    -> sereno, analítico y directo:
+                      movimiento firme, medido y controlado.
+     ============================================================ */
+  @keyframes nx-yue-move {
+    0%   { transform: translateY(0)    rotate(0deg)     scale(1);     }
+    25%  { transform: translateY(-7px) rotate(-1.3deg)  scale(1.012); }
+    50%  { transform: translateY(-3px) rotate(0deg)     scale(1.022); }
+    75%  { transform: translateY(-9px) rotate(1.3deg)   scale(1.012); }
+    100% { transform: translateY(0)    rotate(0deg)     scale(1);     }
+  }
+  @keyframes nx-yue-aura {
+    0%,100% { filter: drop-shadow(0 0 12px rgba(168,85,247,0.35)) drop-shadow(0 0 4px rgba(216,180,254,0.40)); }
+    50%     { filter: drop-shadow(0 0 34px rgba(168,85,247,0.85)) drop-shadow(0 0 14px rgba(216,180,254,0.70)); }
+  }
+  @keyframes nx-kai-move {
+    0%   { transform: translateX(0)    rotate(0deg)    scale(1);     }
+    20%  { transform: translateX(5px)  rotate(0.9deg)  scale(1);     }
+    50%  { transform: translateX(0)    rotate(0deg)    scale(1.016); }
+    80%  { transform: translateX(-5px) rotate(-0.9deg) scale(1);     }
+    100% { transform: translateX(0)    rotate(0deg)    scale(1);     }
+  }
+  @keyframes nx-kai-aura {
+    0%,100% { filter: drop-shadow(0 0 12px rgba(59,130,246,0.40)) drop-shadow(0 0 4px rgba(147,197,253,0.40)); }
+    50%     { filter: drop-shadow(0 0 30px rgba(59,130,246,0.90)) drop-shadow(0 0 12px rgba(147,197,253,0.70)); }
+  }
+  .nx-yue-img {
+    animation: nx-yue-move 4.6s ease-in-out infinite,
+               nx-yue-aura 2.4s ease-in-out infinite;
+    will-change: transform, filter;
+  }
+  .nx-kai-img {
+    animation: nx-kai-move 5.4s cubic-bezier(0.45, 0, 0.55, 1) infinite,
+               nx-kai-aura 3.2s ease-in-out infinite;
+    will-change: transform, filter;
+  }
+  /* Respeta a quien prefiere menos movimiento, dejando solo el aura */
+  @media (prefers-reduced-motion: reduce) {
+    .nx-yue-img { animation: nx-yue-aura 2.4s ease-in-out infinite; }
+    .nx-kai-img { animation: nx-kai-aura 3.2s ease-in-out infinite; }
+  }
+
+  @keyframes morphBlob {
+    0%,100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    25% { border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%; }
+    50% { border-radius: 50% 50% 30% 70% / 50% 30% 70% 50%; }
+    75% { border-radius: 30% 70% 70% 30% / 70% 30% 30% 70%; }
+  }
+  .about-hex-inner {
+    text-align: center;
+    padding: 20px;
+  }
+  .about-hex-icon { font-size: 3.5rem; margin-bottom: 12px; }
+  .about-hex-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    color: var(--yue-light);
+  }
+
+  /* ═══ PERSONAJES ═══ */
+  .chars-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .char-card {
+    background: var(--surface);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, border-color 0.3s;
+    position: relative;
+  }
+  .char-card:hover { transform: translateY(-4px); }
+  .char-card.yue:hover { border-color: rgba(168,85,247,0.4); }
+  .char-card.kai:hover { border-color: rgba(59,130,246,0.4); }
+  .char-card-top {
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .char-card.yue .char-card-top { background: radial-gradient(ellipse at 50% 100%, rgba(168,85,247,0.18) 0%, transparent 70%); }
+  .char-card.kai .char-card-top { background: radial-gradient(ellipse at 50% 100%, rgba(59,130,246,0.18) 0%, transparent 70%); }
+  .char-card-avatar {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    object-position: top;
+  }
+  .char-card-body { padding: 28px 28px 32px; }
+  .char-card-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    margin-bottom: 6px;
+  }
+  .char-card.yue .char-card-name { color: var(--yue-light); }
+  .char-card.kai .char-card-name { color: var(--kai-light); }
+  .char-card-role {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+  }
+  .char-card-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .char-traits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .trait-badge {
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+  .char-card.yue .trait-badge { background: var(--yue-glow); color: var(--yue-light); border: 1px solid rgba(168,85,247,0.2); }
+  .char-card.kai .trait-badge { background: var(--kai-glow); color: var(--kai-light); border: 1px solid rgba(59,130,246,0.2); }
+
+  /* ═══ FUNCIONES ═══ */
+  .functions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .func-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .func-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+  }
+  .func-card.yue::before { background: linear-gradient(90deg, var(--yue), transparent); }
+  .func-card.kai::before { background: linear-gradient(90deg, var(--kai), transparent); }
+  .func-card.neutral::before { background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent); }
+  .func-card:hover { transform: translateY(-3px); }
+  .func-card.yue:hover { border-color: rgba(168,85,247,0.3); }
+  .func-card.kai:hover { border-color: rgba(59,130,246,0.3); }
+  .func-icon {
+    font-size: 2rem;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .func-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .func-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+  .func-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .func-list li {
+    font-size: 0.82rem;
+    color: var(--dim);
+    padding-left: 14px;
+    position: relative;
+  }
+  .func-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--dim);
+  }
+  .func-card.yue .func-list li::before { color: var(--yue); }
+  .func-card.kai .func-list li::before { color: var(--kai); }
+
+  /* ═══ BIENESTAR ═══ */
+  .wellbeing-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 52px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 52px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .wellbeing-wrap::after {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(239,68,68,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .wellbeing-text h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f87171;
+    margin-bottom: 16px;
+    letter-spacing: 0.06em;
+  }
+  .wellbeing-text p {
+    font-size: 0.93rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .wellbeing-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .wellbeing-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  .wellbeing-list li::before {
+    content: '';
+    flex-shrink: 0;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #f87171;
+    margin-top: 7px;
+  }
+  .alert-card {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .alert-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .alert-num {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(239,68,68,0.15);
+    color: #f87171;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Orbitron', monospace;
+  }
+  .alert-step-text strong {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .alert-step-text span { font-size: 0.8rem; color: var(--muted); }
+
+  /* ═══ POR QUÉ NEXIA ═══ */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  .why-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px 20px;
+    text-align: center;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .why-card:hover { transform: translateY(-3px); border-color: rgba(168,85,247,0.25); }
+  .why-icon { font-size: 2.2rem; margin-bottom: 14px; }
+  .why-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+  .why-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ═══ ELIGE TU EXPERIENCIA ═══ */
+  .choose-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+  .choose-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s;
+  }
+  .choose-card:hover { transform: translateY(-4px); }
+  .choose-card.featured { border-color: rgba(168,85,247,0.4); }
+  .featured-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--yue), var(--kai));
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 4px 14px;
+    border-radius: 50px;
+    white-space: nowrap;
+    font-family: 'Rajdhani', sans-serif;
+  }
+  .choose-avatar {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    margin: 0 auto 16px;
+    display: block;
+  }
+  .choose-card.yue .choose-avatar { border: 2px solid var(--yue); }
+  .choose-card.kai .choose-avatar { border: 2px solid var(--kai); }
+  .choose-card.both .choose-avatar { border: 2px solid transparent; background: linear-gradient(var(--surface), var(--surface)) padding-box, linear-gradient(135deg, var(--yue), var(--kai)) border-box; }
+  .choose-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.12em;
+  }
+  .choose-card.yue .choose-name { color: var(--yue-light); }
+  .choose-card.kai .choose-name { color: var(--kai-light); }
+  .choose-card.both .choose-name { background: linear-gradient(135deg, var(--yue-light), var(--kai-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .choose-role { font-size: 0.82rem; color: var(--muted); margin-bottom: 20px; }
+  .choose-traits { display: flex; flex-direction: column; gap: 8px; }
+  .choose-trait { font-size: 0.83rem; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .choose-trait::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .choose-card.yue .choose-trait::before { background: var(--yue); }
+  .choose-card.kai .choose-trait::before { background: var(--kai); }
+  .choose-card.both .choose-trait::before { background: linear-gradient(135deg, var(--yue), var(--kai)); }
+
+  /* ═══ VISIÓN FUTURA ═══ */
+  .vision-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .vision-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .vision-card:hover { transform: translateY(-3px); border-color: rgba(168,85,247,0.25); }
+  .vision-card::before {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    opacity: 0.08;
+  }
+  .vision-card:nth-child(1)::before { background: var(--yue); }
+  .vision-card:nth-child(2)::before { background: var(--kai); }
+  .vision-icon { font-size: 2.4rem; margin-bottom: 16px; display: block; }
+  .vision-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  .vision-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 18px; }
+  .vision-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .vision-list li { font-size: 0.83rem; color: var(--dim); padding-left: 14px; position: relative; }
+  .vision-list li::before { content: '◦'; position: absolute; left: 0; color: var(--yue); }
+
+  /* ═══ STATS ═══ */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--yue-light), var(--kai-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 0.82rem; color: var(--muted); letter-spacing: 0.04em; }
+
+  /* ═══ FOOTER ═══ */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 52px 40px;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    background: linear-gradient(135deg, var(--yue-light), var(--kai-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .footer-tagline { font-size: 0.85rem; color: var(--dim); margin-bottom: 32px; }
+  .footer-credits { font-size: 0.78rem; color: var(--dim); opacity: 0.6; }
+
+  /* ═══ SCROLL ANIMATE ═══ */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .scroll-reveal.revealed { opacity: 1; transform: translateY(0); }
+
+  /* ═══ GUIDE AVATARS (fijos en pantalla) ═══ */
+  .guide-yue {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .guide-kai {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .guide-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    color: var(--text);
+    max-width: 220px;
+    line-height: 1.5;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .guide-bubble.show { opacity: 1; }
+  .guide-yue .guide-bubble { border-color: rgba(168,85,247,0.3); }
+  .guide-kai .guide-bubble { border-color: rgba(59,130,246,0.3); text-align: right; }
+  .guide-avatar-sm {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+    border: 2px solid;
+  }
+  .guide-yue .guide-avatar-sm { border-color: var(--yue); }
+  .guide-kai .guide-avatar-sm { border-color: var(--kai); }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 900px) {
+    .about-grid, .chars-grid, .choose-grid, .vision-grid { grid-template-columns: 1fr; }
+    .wellbeing-wrap { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .hero-char { display: none; }
+    nav .nav-links { display: none; }
+    .section-inner { padding: 60px 20px; }
+  }
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .choose-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ═══ AVATARES STICKY (flotan al lado) ═══ */
+  .sticky-avatar-yue,
+  .sticky-avatar-kai {
+    position: fixed;
+    bottom: 0;
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    transition: bottom 0.3s ease;
+  }
+  .sticky-avatar-yue { left: 0; align-items: flex-start; }
+  .sticky-avatar-kai { right: 0; align-items: flex-end; }
+
+  .sticky-avatar-yue img,
+  .sticky-avatar-kai img {
+    width: 140px;
+    height: 200px;
+    object-fit: cover;
+    object-position: top;
+    filter: drop-shadow(0 0 18px rgba(168,85,247,0.35));
+    display: block;
+  }
+  .sticky-avatar-kai img {
+    filter: drop-shadow(0 0 18px rgba(59,130,246,0.35));
+  }
+
+  .sticky-bubble-yue,
+  .sticky-bubble-kai {
+    background: var(--surface);
+    border: 1px solid rgba(168,85,247,0.35);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: var(--text);
+    max-width: 200px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s, transform 0.4s;
+    pointer-events: none;
+  }
+  .sticky-bubble-kai {
+    border-color: rgba(59,130,246,0.35);
+    margin-left: 0;
+    margin-right: 8px;
+    text-align: right;
+  }
+  .sticky-bubble-yue.show,
+  .sticky-bubble-kai.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ═══ BOTÓN ACTIVAR AUDIO ═══ */
+  #audio-fab {
+    position: fixed;
+    bottom: 210px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 300;
+    background: linear-gradient(135deg, var(--yue-dark), var(--kai-dark));
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    pointer-events: all;
+    display: none;
+    gap: 8px;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(168,85,247,0.3);
+    transition: opacity 0.2s, transform 0.15s;
+    white-space: nowrap;
+  }
+  #audio-fab:hover { opacity: 0.88; transform: translateX(-50%) translateY(-2px); }
+  #audio-fab.active { background: linear-gradient(135deg, #059669, #0284c7); }
+
+  /* ═══ BOTÓN CERRAR SESIÓN ═══ */
+  .btn-logout {
+    padding: 6px 16px;
+    border-radius: 50px;
+    border: 1px solid rgba(239,68,68,0.35);
+    background: rgba(239,68,68,0.08);
+    color: #f87171;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s;
+    pointer-events: all;
+  }
+  .btn-logout:hover { background: rgba(239,68,68,0.18); }
+
+</style>
+</head>
+<body>
+
+
+<!-- STICKY AVATARS -->
+<div class="sticky-avatar-yue" id="stickyYue">
+  <div class="sticky-bubble-yue" id="stickyBubbleYue"></div>
+  <img src="yue_img/Yue_tierna.png" alt="YUE">
+</div>
+<div class="sticky-avatar-kai" id="stickyKai">
+  <div class="sticky-bubble-kai" id="stickyBubbleKai"></div>
+  <img src="kai_img/Kai_tierno.png" alt="KAI">
+</div>
+
+<!-- BOTÓN ACTIVAR AUDIO -->
+<button id="audio-fab" onclick="toggleAudio()">🔇 Activar audio de YUE y KAI</button>
+
+<!-- PARTICLES -->
+<div id="particles"></div>
+
+<!-- GUIDE AVATARS (fixed, shown after welcome) -->
+<div class="guide-yue" id="guideYue">
+  <div class="guide-bubble" id="guideBubbleYue"></div>
+  <img src="yue_img/Yue_tierna.png" class="guide-avatar-sm" alt="YUE">
+</div>
+<div class="guide-kai" id="guideKai">
+  <div class="guide-bubble" id="guideBubbleKai"></div>
+  <img src="kai_img/Kai_tierno.png" class="guide-avatar-sm" alt="KAI">
+</div>
+
+<!-- REGISTER SCREEN -->
+<div id="register-screen" style="display:flex">
+  <div class="register-glow"></div>
+  <div class="register-box">
+    <div class="register-logo">NEXIA</div>
+    <div class="register-sub">La inteligencia que evoluciona contigo</div>
+    <div class="reg-avatars">
+      <img src="yue_img/Yue_tierna.png" class="reg-avatar yue" alt="YUE">
+      <img src="kai_img/Kai_tierno.png" class="reg-avatar kai" alt="KAI">
+    </div>
+    <div id="register-form">
+      <div class="form-group">
+        <label>Tu nombre</label>
+        <input type="text" id="reg-name" placeholder="¿Cómo te llamas?" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="reg-email" placeholder="tu@correo.com">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="reg-pass" placeholder="••••••••">
+      </div>
+      <button class="btn-register" onclick="handleRegister()">COMENZAR MI EXPERIENCIA</button>
+      <div class="login-link">¿Ya tienes cuenta? <span onclick="handleLogin()">Iniciar sesión</span></div>
+    </div>
+    <div id="login-form" style="display:none">
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="login-email" placeholder="tu@correo.com">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="login-pass" placeholder="••••••••">
+      </div>
+      <button class="btn-register" onclick="handleLoginSubmit()">ENTRAR A NEXIA</button>
+      <div class="login-link"><span onclick="handleRegisterSwitch()">Crear una cuenta nueva</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- WELCOME SCREEN -->
+<div id="welcome-screen">
+  <div class="welcome-inner">
+    <div class="welcome-character yue" id="wYue">
+      <div class="speech-bubble" id="bubbleYue"></div>
+      <div class="welcome-avatar-wrap">
+        <img src="yue_img/Yue_tierna.png" class="welcome-avatar" alt="YUE">
+      </div>
+      <div class="welcome-name">YUE</div>
+    </div>
+    <div class="welcome-center" id="wCenter">
+      <div class="welcome-title-main">NEXIA</div>
+      <div class="welcome-user-name" id="wUserName">¡Bienvenido!</div>
+      <div class="welcome-divider"></div>
+      <div class="welcome-tagline">La inteligencia artificial que evoluciona contigo</div>
+      <button class="btn-enter" onclick="enterApp()">EXPLORAR NEXIA →</button>
+    </div>
+    <div class="welcome-character kai" id="wKai">
+      <div class="speech-bubble" id="bubbleKai"></div>
+      <div class="welcome-avatar-wrap">
+        <img src="kai_img/Kai_tierno.png" class="welcome-avatar" alt="KAI">
+      </div>
+      <div class="welcome-name">KAI</div>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar" style="display:none">
+  <div class="nav-logo">NEXIA</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Inicio</a></li>
+    <li><a href="#about">¿Qué es?</a></li>
+    <li><a href="#characters">YUE & KAI</a></li>
+    <li><a href="#functions">Funciones</a></li>
+    <li><a href="#vision">Visión</a></li>
+  </ul>
+  <div class="nav-user">
+    <div class="nav-avatar-sm" id="navInitial">N</div>
+    <span id="navUserName">Usuario</span>
+    <button class="btn-logout" onclick="handleLogout()">SALIR</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main-content" style="display:none">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div style="position:absolute;top:30%;left:15%;width:1px;height:40%;background:linear-gradient(to bottom,transparent,rgba(168,85,247,0.15),transparent);"></div>
+    <div style="position:absolute;top:30%;right:15%;width:1px;height:40%;background:linear-gradient(to bottom,transparent,rgba(59,130,246,0.15),transparent);"></div>
+    <div class="hero-inner">
+      <div class="hero-char yue">
+        <img src="yue_img/Yue_tierna.png" alt="YUE">
+      </div>
+      <div class="hero-center">
+        <div class="hero-eyebrow">BIENVENIDO A</div>
+        <h1 class="hero-title">NEXIA</h1>
+        <p class="hero-sub">La inteligencia artificial que evoluciona contigo</p>
+        <div class="hero-pills">
+          <span class="pill pill-yue">💜 Compañía inteligente</span>
+          <span class="pill pill-kai">🧠 Adaptación personalizada</span>
+          <span class="pill pill-yue">🌱 Memoria progresiva</span>
+          <span class="pill pill-kai">❤️ Apoyo emocional</span>
+          <span class="pill pill-neutral">⭐ Crecimiento personal</span>
+        </div>
+        <div class="hero-cta">
+          <a href="#characters" class="btn-primary">Conoce a YUE y KAI</a>
+          <a href="#functions" class="btn-secondary">Ver funciones</a>
+        </div>
+      </div>
+      <div class="hero-char kai">
+        <img src="kai_img/Kai_tierno.png" alt="KAI">
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- STATS -->
+  <section style="position:relative;z-index:1;">
+    <div class="section-inner" style="padding-top:52px;padding-bottom:52px;">
+      <div class="stats-row scroll-reveal">
+        <div class="stat-card"><span class="stat-num">2</span><span class="stat-label">Asistentes únicos</span></div>
+        <div class="stat-card"><span class="stat-num">10</span><span class="stat-label">Niveles de relación</span></div>
+        <div class="stat-card"><span class="stat-num">∞</span><span class="stat-label">Memoria compartida</span></div>
+        <div class="stat-card"><span class="stat-num">24/7</span><span class="stat-label">Disponible siempre</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ¿QUÉ ES NEXIA? -->
+  <section id="about" style="background:var(--bg2);">
+    <div class="section-inner">
+      <div class="section-header scroll-reveal">
+        <span class="section-tag tag-neutral">🤖 Sistema</span>
+        <h2 class="section-title">¿Qué es NEXIA?</h2>
+        <p class="section-sub">Mucho más que un asistente virtual. Un ecosistema de inteligencia que aprende, recuerda y crece junto a ti.</p>
+      </div>
+      <div class="about-grid scroll-reveal">
+        <div class="about-text">
+          <h3>Una IA diseñada para ser humana</h3>
+          <p>NEXIA nació de una idea simple pero poderosa: la tecnología debería adaptarse a las personas, no al revés. Por eso creamos dos asistentes con personalidades únicas que comparten tu memoria y evolucionan contigo a través del tiempo.</p>
+          <p>Cada conversación es una oportunidad para que NEXIA te conozca mejor. No solo recuerda hechos, sino emociones, patrones y preferencias que hacen cada interacción más rica y significativa.</p>
+          <ul class="about-feature-list">
+            <li>Aprende de cada conversación de forma acumulativa</li>
+            <li>Recuerda información personal importante para ti</li>
+            <li>Se adapta a tu personalidad y estilo de comunicación</li>
+            <li>Evoluciona su relación contigo a través de 10 niveles</li>
+            <li>Experiencia completamente única para cada persona</li>
+            <li>Memoria compartida entre YUE y KAI para coherencia total</li>
+            <li>Detección de patrones emocionales y conductuales</li>
+          </ul>
+        </div>
+        <div class="about-visual">
+          <div class="about-hex">
+            <div class="about-hex-inner">
+              <div class="about-hex-icon">🧠</div>
+              <div class="about-hex-text">INTELIGENCIA<br>ADAPTATIVA</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PERSONAJES -->
+  <section id="characters">
+    <div class="section-inner">
+      <div class="section-header scroll-reveal">
+        <span class="section-tag tag-yue">✨ Tus compañeros</span>
+        <h2 class="section-title">Conoce a YUE y KAI</h2>
+        <p class="section-sub">Dos inteligencias distintas, una memoria compartida. Cada una diseñada para acompañarte de forma diferente y complementaria.</p>
+      </div>
+      <div class="chars-grid scroll-reveal">
+        <div class="char-card yue">
+          <div class="char-card-top">
+            <img src="yue_img/Yue_tierna.png" class="char-card-avatar" alt="YUE">
+          </div>
+          <div class="char-card-body">
+            <div class="char-card-name">YUE</div>
+            <div class="char-card-role">💜 Tu compañera emocional</div>
+            <p class="char-card-desc">YUE es cálida, expresiva y profundamente empática. Su misión es estar presente en cada momento de tu vida: celebrando tus logros, acompañándote en los momentos difíciles y motivándote cada día. Habla con el corazón.</p>
+            <div class="char-traits">
+              <span class="trait-badge">Empática</span>
+              <span class="trait-badge">Motivadora</span>
+              <span class="trait-badge">Conversaciones cercanas</span>
+              <span class="trait-badge">Apoyo emocional</span>
+              <span class="trait-badge">Seguimiento emocional</span>
+              <span class="trait-badge">Cariñosa</span>
+              <span class="trait-badge">Protectora</span>
+            </div>
+          </div>
+        </div>
+        <div class="char-card kai">
+          <div class="char-card-top">
+            <img src="kai_img/Kai_tierno.png" class="char-card-avatar" alt="KAI">
+          </div>
+          <div class="char-card-body">
+            <div class="char-card-name">KAI</div>
+            <div class="char-card-role">🖤 Tu compañero estratégico</div>
+            <p class="char-card-desc">KAI es sereno, analítico y orientado a resultados. No te dice lo que quieres oír, sino lo que necesitas saber. Con él organizas metas, resuelves problemas y construyes un camino claro hacia donde quieres llegar.</p>
+            <div class="char-traits">
+              <span class="trait-badge">Organización personal</span>
+              <span class="trait-badge">Resolución de problemas</span>
+              <span class="trait-badge">Seguimiento de metas</span>
+              <span class="trait-badge">Consejos prácticos</span>
+              <span class="trait-badge">Pensamiento analítico</span>
+              <span class="trait-badge">Directo</span>
+              <span class="trait-badge">Reflexivo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- FUNCIONES PRINCIPALES -->
+  <section id="functions" style="background:var(--bg2);">
+    <div class="section-inner">
+      <div class="section-header scroll-reveal">
+        <span class="section-tag tag-neutral">⭐ Capacidades</span>
+        <h2 class="section-title">Funciones principales</h2>
+        <p class="section-sub">Herramientas diseñadas para ayudarte cada día. Un ecosistema completo de crecimiento personal.</p>
+      </div>
+      <div class="functions-grid scroll-reveal">
+        <div class="func-card yue">
+          <span class="func-icon">💜</span>
+          <div class="func-title">Apoyo emocional</div>
+          <p class="func-desc">YUE y KAI detectan tu estado emocional y adapta cada respuesta para darte exactamente lo que necesitas en ese momento.</p>
+          <ul class="func-list">
+            <li>Escucha activa y sin juicios</li>
+            <li>Conversaciones completamente personalizadas</li>
+            <li>Motivación constante y recordatorios positivos</li>
+            <li>Acompañamiento diario en todos los momentos</li>
+            <li>Detección temprana de patrones emocionales</li>
+          </ul>
+        </div>
+        <div class="func-card kai">
+          <span class="func-icon">🧠</span>
+          <div class="func-title">Juegos mentales</div>
+          <p class="func-desc">Ejercita tu mente con actividades diseñadas para mantener tu cerebro activo, ágil y en constante crecimiento.</p>
+          <ul class="func-list">
+            <li>Ejercicios de memoria y retención</li>
+            <li>Retos de concentración y atención</li>
+            <li>Problemas de lógica y razonamiento</li>
+            <li>Desafíos de velocidad de reacción</li>
+            <li>Progresión adaptada a tu nivel</li>
+          </ul>
+        </div>
+        <div class="func-card yue">
+          <span class="func-icon">📖</span>
+          <div class="func-title">Diario virtual</div>
+          <p class="func-desc">Un espacio íntimo donde registrar tus pensamientos, emociones y experiencias. Tu historia guardada de forma segura.</p>
+          <ul class="func-list">
+            <li>Registro emocional diario</li>
+            <li>Reflexión personal guiada</li>
+            <li>Seguimiento de tu bienestar en el tiempo</li>
+            <li>Historial completo de experiencias</li>
+            <li>Análisis de patrones y evolución personal</li>
+          </ul>
+        </div>
+        <div class="func-card kai">
+          <span class="func-icon">🎭</span>
+          <div class="func-title">Adaptación inteligente</div>
+          <p class="func-desc">NEXIA aprende tu estilo único de comunicación y adapta continuamente cómo interactúa contigo.</p>
+          <ul class="func-list">
+            <li>Aprende tus gustos y preferencias</li>
+            <li>Comprende tus necesidades implícitas</li>
+            <li>Ajusta su forma de hablar a ti</li>
+            <li>Personaliza cada experiencia de forma única</li>
+            <li>Evolución continua con cada interacción</li>
+          </ul>
+        </div>
+        <div class="func-card yue">
+          <span class="func-icon">👤</span>
+          <div class="func-title">Avatar interactivo</div>
+          <p class="func-desc">Avatares con vida propia que reaccionan, expresan emociones y crean una experiencia de conversación más humana.</p>
+          <ul class="func-list">
+            <li>Expresiones emocionales en tiempo real</li>
+            <li>Animaciones dinámicas y contextuales</li>
+            <li>Interacción visual enriquecida</li>
+            <li>Mayor sensación de presencia e inmersión</li>
+            <li>Personalidad visual única para cada IA</li>
+          </ul>
+        </div>
+        <div class="func-card kai">
+          <span class="func-icon">🎯</span>
+          <div class="func-title">Gestión de metas</div>
+          <p class="func-desc">KAI te ayuda a definir objetivos claros, crear planes de acción y mantenerte en el camino hacia donde quieres llegar.</p>
+          <ul class="func-list">
+            <li>Definición y estructuración de metas</li>
+            <li>Seguimiento de progreso continuo</li>
+            <li>Recordatorios y check-ins regulares</li>
+            <li>Análisis de obstáculos y soluciones</li>
+            <li>Celebración de logros alcanzados</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- BIENESTAR EMOCIONAL -->
+  <section id="wellbeing">
+    <div class="section-inner">
+      <div class="section-header scroll-reveal">
+        <span class="section-tag" style="background:rgba(239,68,68,0.08);color:#f87171;border:1px solid rgba(239,68,68,0.2);">🚨 Seguridad</span>
+        <h2 class="section-title">Bienestar emocional</h2>
+        <p class="section-sub">Detección temprana de señales de riesgo para protegerte cuando más lo necesitas.</p>
+      </div>
+      <div class="wellbeing-wrap scroll-reveal">
+        <div class="wellbeing-text">
+          <h3>Tu seguridad, nuestra prioridad</h3>
+          <p>NEXIA va más allá de la conversación cotidiana. Con algoritmos de detección emocional avanzada, identifica señales de crisis antes de que se agraven y actúa de inmediato para conectarte con el apoyo que necesitas.</p>
+          <p>Este sistema no reemplaza la atención profesional, la complementa. Es un primer filtro de cuidado disponible las 24 horas, todos los días.</p>
+          <ul class="wellbeing-list">
+            <li>Identificación temprana de crisis emocionales y estados de riesgo</li>
+            <li>Recomendación inmediata de recursos de apoyo profesional</li>
+            <li>Opción de contactar personas de confianza configuradas por el usuario</li>
+            <li>Herramientas de acompañamiento en momentos de vulnerabilidad</li>
+            <li>Registro discreto de patrones para seguimiento a largo plazo</li>
+            <li>Protocolo de acción claro y empático, sin alarmar innecesariamente</li>
+          </ul>
+        </div>
+        <div class="alert-card">
+          <div style="font-family:\'Rajdhani\',sans-serif;font-size:0.82rem;letter-spacing:0.15em;color:#f87171;text-transform:uppercase;margin-bottom:8px;">Protocolo de respuesta</div>
+          <div class="alert-step">
+            <div class="alert-num">1</div>
+            <div class="alert-step-text"><strong>Detección</strong><span>NEXIA identifica señales en el lenguaje y tono de la conversación</span></div>
+          </div>
+          <div class="alert-step">
+            <div class="alert-num">2</div>
+            <div class="alert-step-text"><strong>Validación empática</strong><span>Responde con presencia y acompañamiento sin minimizar el dolor</span></div>
+          </div>
+          <div class="alert-step">
+            <div class="alert-num">3</div>
+            <div class="alert-step-text"><strong>Recursos de apoyo</strong><span>Comparte líneas de ayuda, profesionales o personas de confianza</span></div>
+          </div>
+          <div class="alert-step">
+            <div class="alert-num">4</div>
+            <div class="alert-step-text"><strong>Seguimiento</strong><span>Registra el evento para hacer seguimiento en las próximas interacciones</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- POR QUÉ NEXIA -->
+  <section id="why" style="background:var(--bg2);">
+    <div class="section-inner">
+      <div class="section-header scroll-reveal">
+        <span class="section-tag tag-yue">🌟 Diferenciadores</span>
+        <h2 class="section-title">¿Por qué NEXIA es diferente?</h2>
+        <p class="section-sub">Una experiencia creada para cada persona. No hay dos usuarios con la misma NEXIA.</p>
+      </div>
+      <div class="why-grid scroll-reveal">
+        <div class="why-card">
+          <div class="why-icon">🧠</div>
+          <div class="why-title">Memoria persistente</div>
+          <p class="why-desc">Recuerda cada detalle que compartes. No tienes que repetirte nunca. Cada sesión construye sobre la anterior.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🌊</div>
+          <div class="why-title">Adaptabilidad total</div>
+          <p class="why-desc">Se ajusta a tu personalidad, estado emocional y estilo de comunicación de forma automática y continua.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">👥</div>
+          <div class="why-title">Dos asistentes únicos</div>
+          <p class="why-desc">YUE y KAI ofrecen perspectivas complementarias, cubriendo tanto el apoyo emocional como el estratégico.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">📈</div>
+          <div class="why-title">Evolución constante</div>
+          <p class="why-desc">El sistema de niveles hace que la relación se profundice con el tiempo, desbloqueando nuevas capacidades.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🤝</div>
+          <div class="why-title">Interacción más humana</div>
+          <p class="why-desc">Conversaciones naturales, contextuales y emotivas que van mucho más allá de los comandos y respuestas típicas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ELIGE TU EXPERIENCIA -->
+  <section id="choose">
+    <div class="section-inner">
+      <div class="section-header scroll-reveal">
+        <span class="section-tag tag-neutral">📱 Personalización</span>
+        <h2 class="section-title">Elige tu experiencia</h2>
+        <p class="section-sub">Escoge quién te acompañará en este viaje. Puedes cambiar cuando quieras.</p>
+      </div>
+      <div class="choose-grid scroll-reveal">
+        <div class="choose-card yue">
+          <img src="yue_img/Yue_tierna.png" class="choose-avatar" alt="YUE">
+          <div class="choose-name">YUE</div>
+          <div class="choose-role">Compañera emocional</div>
+          <div class="choose-traits">
+            <div class="choose-trait">Cercana y afectiva</div>
+            <div class="choose-trait">Cariñosa y protectora</div>
+            <div class="choose-trait">Alegre y motivadora</div>
+            <div class="choose-trait">Apoyo emocional profundo</div>
+          </div>
+        </div>
+        <div class="choose-card kai">
+          <img src="kai_img/Kai_tierno.png" class="choose-avatar" alt="KAI">
+          <div class="choose-name">KAI</div>
+          <div class="choose-role">Compañero estratégico</div>
+          <div class="choose-traits">
+            <div class="choose-trait">Tranquilo y sereno</div>
+            <div class="choose-trait">Analítico y directo</div>
+            <div class="choose-trait">Reflexivo y preciso</div>
+            <div class="choose-trait">Enfocado en soluciones</div>
+          </div>
+        </div>
+        <div class="choose-card both featured">
+          <div class="featured-badge">RECOMENDADO</div>
+          <div style="width:90px;height:90px;margin:0 auto 16px;position:relative;">
+            <img src="yue_img/Yue_tierna.png" style="width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:top;border:2px solid var(--yue);position:absolute;left:0;top:0;" alt="YUE">
+            <img src="kai_img/Kai_tierno.png" style="width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:top;border:2px solid var(--kai);position:absolute;right:0;bottom:0;" alt="KAI">
+          </div>
+          <div class="choose-name">AMBOS</div>
+          <div class="choose-role">Experiencia completa</div>
+          <div class="choose-traits">
+            <div class="choose-trait">Experiencia total</div>
+            <div class="choose-trait">Perspectivas complementarias</div>
+            <div class="choose-trait">Memoria completamente compartida</div>
+            <div class="choose-trait">Lo mejor de los dos mundos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- VISIÓN FUTURA -->
+  <section id="vision" style="background:var(--bg2);">
+    <div class="section-inner">
+      <div class="section-header scroll-reveal">
+        <span class="section-tag tag-kai">🚀 Futuro</span>
+        <h2 class="section-title">Visión futura</h2>
+        <p class="section-sub">Tecnología pensada para ayudar a más personas. El camino de NEXIA apenas comienza.</p>
+      </div>
+      <div class="vision-grid scroll-reveal">
+        <div class="vision-card">
+          <span class="vision-icon">👓</span>
+          <div class="vision-title">Asistencia para Alzheimer</div>
+          <p class="vision-desc">NEXIA como compañero terapéutico para personas con deterioro cognitivo, ofreciendo estructura, memoria externa y presencia reconfortante.</p>
+          <ul class="vision-list">
+            <li>Recordatorio personalizado de medicamentos y rutinas</li>
+            <li>Reconocimiento de familiares y personas cercanas</li>
+            <li>Orientación básica en tiempo y espacio</li>
+            <li>Protocolo de ayuda en situaciones de emergencia</li>
+            <li>Informe periódico para cuidadores y familiares</li>
+            <li>Estimulación cognitiva con ejercicios adaptativos</li>
+          </ul>
+        </div>
+        <div class="vision-card">
+          <span class="vision-icon">👁️</span>
+          <div class="vision-title">Asistencia para discapacidad visual</div>
+          <p class="vision-desc">Integración con sensores y cámaras para convertir a NEXIA en los ojos de quienes más lo necesitan, ampliando su autonomía e independencia.</p>
+          <ul class="vision-list">
+            <li>Reconocimiento y descripción del entorno en tiempo real</li>
+            <li>Detección y alerta de obstáculos físicos</li>
+            <li>Identificación de personas conocidas y nuevas</li>
+            <li>Asistencia guiada en desplazamientos y rutas</li>
+            <li>Lectura de documentos, menús y señalización</li>
+            <li>Integración con dispositivos de asistencia existentes</li>
+          </ul>
+        </div>
+        <div class="vision-card">
+          <span class="vision-icon">🏥</span>
+          <div class="vision-title">Salud mental proactiva</div>
+          <p class="vision-desc">Un sistema de seguimiento continuo que trabaja con profesionales de salud mental para complementar el tratamiento y el bienestar emocional a largo plazo.</p>
+          <ul class="vision-list">
+            <li>Seguimiento de terapias y tareas asignadas</li>
+            <li>Informes de estado emocional para el terapeuta</li>
+            <li>Ejercicios de mindfulness y regulación emocional</li>
+            <li>Acompañamiento entre sesiones terapéuticas</li>
+          </ul>
+        </div>
+        <div class="vision-card">
+          <span class="vision-icon">🌍</span>
+          <div class="vision-title">Accesibilidad global</div>
+          <p class="vision-desc">Llevar NEXIA a comunidades con acceso limitado a recursos de salud mental y apoyo emocional, democratizando el bienestar personal.</p>
+          <ul class="vision-list">
+            <li>Versión optimizada para dispositivos de gama baja</li>
+            <li>Funcionamiento offline para zonas sin conectividad</li>
+            <li>Soporte multilingüe y culturalmente adaptado</li>
+            <li>Programa de acceso gratuito para comunidades vulnerables</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- NIVELES DE RELACIÓN -->
+  <section id="levels">
+    <div class="section-inner">
+      <div class="section-header scroll-reveal">
+        <span class="section-tag tag-yue">📊 Progresión</span>
+        <h2 class="section-title">Sistema de niveles</h2>
+        <p class="section-sub">Tu relación con NEXIA crece con cada conversación. 10 niveles de profundidad y confianza.</p>
+      </div>
+      <div class="scroll-reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:var(--dim);margin-bottom:6px;">01</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Desconocida</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Te conoce poco</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:var(--yue);opacity:0.5;margin-bottom:6px;">02</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Curiosa</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Empieza a conocerte</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:var(--yue);opacity:0.6;margin-bottom:6px;">03</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Amiga</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Ya te conoce bien</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:var(--yue);opacity:0.7;margin-bottom:6px;">04</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Confidente</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Recuerda tus gustos</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid rgba(168,85,247,0.2);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:var(--yue);margin-bottom:6px;">05</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Cercana</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Recuerda tu estado</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid rgba(168,85,247,0.25);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:var(--yue-light);margin-bottom:6px;">06</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Íntima</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Recuerda tus metas</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid rgba(168,85,247,0.3);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:var(--yue-light);margin-bottom:6px;">07</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Protectora</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Detecta patrones</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid rgba(168,85,247,0.35);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:var(--yue-light);margin-bottom:6px;">08</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Alma Gemela</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Conoce tu interior</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid rgba(168,85,247,0.4);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;color:#c084fc;margin-bottom:6px;">09</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Lazo Profundo</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Conoce tus ciclos</div>
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(59,130,246,0.12));border:1px solid rgba(168,85,247,0.5);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:\'Orbitron\',monospace;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,var(--yue-light),var(--kai-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;">10</div>
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);margin-bottom:4px;">Vínculo Eterno</div>
+          <div style="font-size:0.75rem;color:var(--dim);">Conexión completa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer id="site-footer" style="display:none">
+  <div class="footer-logo">NEXIA</div>
+  <div class="footer-tagline">La inteligencia artificial que evoluciona contigo</div>
+  <div style="display:flex;justify-content:center;gap:12px;margin-bottom:28px;flex-wrap:wrap;">
+    <span style="font-size:0.8rem;color:var(--dim);">YUE 💜 Tu compañera emocional</span>
+    <span style="color:var(--dim);">·</span>
+    <span style="font-size:0.8rem;color:var(--dim);">KAI 🖤 Tu compañero estratégico</span>
+  </div>
+  <div class="footer-credits">© 2025 NEXIA · Todos los derechos reservados · Desarrollado con ❤️</div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════
+// DATOS DE SECCIONES — YUE habla 1a parte, KAI termina
+// ══════════════════════════════════════════════
+const SECTION_AUDIO = {
+  hero: {
+    yue: "¡Bienvenido a NEXIA! Soy YUE, tu compañera emocional. Estoy aquí para acompañarte, motivarte y crecer contigo cada día.",
+    kai: "Soy KAI. NEXIA es una inteligencia que evoluciona contigo. Dos asistentes únicos, una memoria compartida."
+  },
+  about: {
+    yue: "¿Qué es NEXIA? Mucho más que un asistente. Soy parte de un ecosistema que aprende de cada conversación.",
+    kai: "Cada interacción nos permite conocerte mejor: tus emociones, tus patrones, tus preferencias. Todo para darte una experiencia única."
+  },
+  characters: {
+    yue: "¡Hola! Soy YUE, tu compañera emocional. Soy cálida, empática y siempre estoy aquí para ti. ¿Quieres conocerme mejor?",
+    kai: "Y yo soy KAI. Analítico, directo y orientado a resultados. Juntos cubrimos todo lo que necesitas."
+  },
+  functions: {
+    yue: "Tenemos funciones diseñadas para ayudarte cada día: apoyo emocional, diario virtual, y avatares interactivos.",
+    kai: "También gestión de metas, juegos mentales y adaptación inteligente. Un ecosistema completo de crecimiento personal."
+  },
+  wellbeing: {
+    yue: "Tu bienestar emocional es nuestra prioridad. Detectamos señales de riesgo antes de que se agraven.",
+    kai: "Con un protocolo claro: detección, validación empática, recursos de apoyo y seguimiento continuo. Siempre contigo."
+  },
+  why: {
+    yue: "¿Por qué NEXIA es diferente? Porque tiene memoria persistente: recuerda todo lo que compartes sin que tengas que repetirte nunca.",
+    kai: "Además, somos dos asistentes únicos con perspectivas complementarias. YUE cubre el apoyo emocional, yo el estratégico. Y nuestra relación evoluciona contigo a través del tiempo."
+  },
+  choose: {
+    yue: "Elige tu experiencia. Puedes elegirme a mí, YUE, tu compañera emocional. Soy cercana, cariñosa y siempre estoy para ti.",
+    kai: "O puedes elegirme a mí, KAI, tu compañero estratégico. Analítico, directo y enfocado en soluciones. Aunque lo mejor es elegirnos a los dos: experiencia completa."
+  },
+  vision: {
+    yue: "Nuestra visión va más lejos. Queremos ser compañía terapéutica para personas con Alzheimer, dándoles estructura, memoria externa y presencia reconfortante.",
+    kai: "También planeamos integrarnos con sensores para asistir a personas con discapacidad visual, y expandir NEXIA globalmente con acceso gratuito para comunidades vulnerables."
+  },
+  levels: {
+    yue: "A medida que hablamos, nuestra relación crece. Comenzamos como desconocidas y podemos llegar a ser amigas, confidentes y mucho más.",
+    kai: "Son diez niveles en total. Desde el nivel uno, donde apenas te conocemos, hasta el nivel diez: vínculo eterno. La conexión más profunda que NEXIA puede ofrecer."
+  }
+};
+
+const GUIDE_LINES_YUE = [
+  "¿Ya viste las funciones de NEXIA? ¡Hay mucho para ti!",
+  "¡Me alegra que estés aquí!",
+  "Juntos podemos hacer grandes cosas 🌟",
+  "Sigue explorando, cada sección tiene algo especial.",
+];
+const GUIDE_LINES_KAI = [
+  "Explora cada sección. Hay mucho por descubrir.",
+  "¿Tienes una meta? Yo puedo ayudarte a organizarla.",
+  "Sigue bajando. La visión futura te interesará.",
+  "La información aquí fue diseñada para ti.",
+];
+
+let userData = { name: '', email: '' };
+let audioEnabled = false;
+let lastSpokenSection = null;
+let speechInProgress = false;
+let currentUtterance = null;
+let hasScrolledDown = false;
+let lastScrollY = 0;
+let sectionObservers = {};
+let guideInterval = null;
+
+// ══════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════
+function safeLocalStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch(e) {
+    // localStorage no disponible (modo privado, iframe, etc.) — continuar igual
+  }
+}
+
+function handleRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value; // NO usar .trim() en contraseña
+  if (!name) { alert('Por favor ingresa tu nombre'); return; }
+  if (!email || !email.includes('@')) { alert('Por favor ingresa un correo válido'); return; }
+  if (!pass || pass.length < 6) { alert('La contraseña debe tener al menos 6 caracteres'); return; }
+  userData = { name, email };
+  safeLocalStorageSet('nexia_user', JSON.stringify(userData));
+  showWelcome(name);
+}
+
+function handleLoginSubmit() {
+  const email = document.getElementById('login-email').value.trim();
+  if (!email || !email.includes('@')) { alert('Por favor ingresa un correo válido'); return; }
+  const name = email.split('@')[0];
+  userData = { name: name.charAt(0).toUpperCase() + name.slice(1), email };
+  safeLocalStorageSet('nexia_user', JSON.stringify(userData));
+  showWelcome(userData.name);
+}
+
+function handleLogin() {
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('login-form').style.display = 'block';
+}
+function handleRegisterSwitch() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
+}
+
+function handleLogout() {
+  // Detener audio si hay
+  stopSpeech();
+  audioEnabled = false;
+  lastSpokenSection = null;
+  hasScrolledDown = false;
+  // Ocultar app
+  document.getElementById('navbar').style.display = 'none';
+  document.getElementById('main-content').style.display = 'none';
+  document.getElementById('site-footer').style.display = 'none';
+  document.getElementById('stickyYue').style.display = 'none';
+  document.getElementById('stickyKai').style.display = 'none';
+  document.getElementById('audio-fab').style.display = 'none';
+  // Limpiar storage
+  try { localStorage.removeItem('nexia_user'); } catch(e) {}
+  userData = { name: '', email: '' };
+  // Mostrar registro
+  document.getElementById('register-screen').style.display = 'flex';
+  // Limpiar campos
+  ['reg-name','reg-email','reg-pass','login-email','login-pass'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('register-form').style.display = 'block';
+  document.getElementById('login-form').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════
+// WELCOME
+// ══════════════════════════════════════════════
+function showWelcome(name) {
+  document.getElementById('register-screen').style.display = 'none';
+  const ws = document.getElementById('welcome-screen');
+  ws.style.display = 'flex';
+  document.getElementById('wUserName').textContent = '¡Bienvenido, ' + name + '!';
+  setTimeout(() => {
+    document.getElementById('wYue').classList.add('visible');
+    document.getElementById('wKai').classList.add('visible');
+  }, 200);
+  setTimeout(() => {
+    const b = document.getElementById('bubbleYue');
+    b.textContent = '¡' + name + '! ¡Qué emoción conocerte! Soy YUE y voy a acompañarte en este viaje. 💜';
+    b.classList.add('show');
+  }, 800);
+  setTimeout(() => {
+    const b = document.getElementById('bubbleKai');
+    b.textContent = 'Bienvenido, ' + name + '. Soy KAI. Aquí encontrarás todo lo que NEXIA puede hacer por ti.';
+    b.classList.add('show');
+  }, 1400);
+  setTimeout(() => {
+    document.getElementById('wCenter').classList.add('show');
+  }, 1800);
+
+  // YUE y KAI hablan en la pantalla de bienvenida
+  setTimeout(() => {
+    if (!_yueVoice && !_kaiVoice) loadVoices();
+    const yueWelcome = cleanTextForTTS('¡' + name + '! ¡Qué emoción conocerte! Soy YUE y voy a acompañarte en este viaje.');
+    const kaiWelcome = cleanTextForTTS('Bienvenido, ' + name + '. Soy KAI. Aquí encontrarás todo lo que NEXIA puede hacer por ti.');
+    _speakWithVoice(yueWelcome, _yueVoice, 1.0, 1.06, () => {
+      setTimeout(() => {
+        _speakWithVoice(kaiWelcome, _kaiVoice, 0.97, 0.9, () => {});
+      }, 300);
+    });
+  }, 900);
+}
+
+function enterApp() {
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('navbar').style.display = 'flex';
+  document.getElementById('main-content').style.display = 'block';
+  document.getElementById('site-footer').style.display = 'block';
+  document.getElementById('navUserName').textContent = userData.name;
+  document.getElementById('navInitial').textContent = userData.name.charAt(0).toUpperCase();
+  // Mostrar sticky avatars
+  document.getElementById('stickyYue').style.display = 'flex';
+  document.getElementById('stickyKai').style.display = 'flex';
+  // Mostrar botón audio
+  document.getElementById('audio-fab').style.display = 'flex';
+  initScrollReveal();
+  initScrollWatcher();
+  initParticles();
+  initGuides();
+
+  // ── Activar audio automáticamente ──
+  // enterApp se llama desde un clic del usuario, así que el navegador
+  // permite reproducir voz. Así las secciones narran solas al bajar,
+  // sin tener que pulsar el botón de audio primero.
+  audioEnabled = true;
+  const fab = document.getElementById('audio-fab');
+  if (fab) { fab.textContent = '🔊 Audio activado'; fab.classList.add('active'); }
+  try { synth.cancel(); } catch(e) {}   // "desbloquea" speechSynthesis en algunos navegadores
+}
+
+// ══════════════════════════════════════════════
+// AUDIO — Web Speech API (gTTS-style, sin dependencias externas)
+// YUE: voz femenina, dulce, juvenil, energética, cariñosa
+// KAI: voz masculina, tranquila, segura, seria pero amable
+// ══════════════════════════════════════════════
+
+const synth = window.speechSynthesis;
+let _yueVoice = null;
+let _kaiVoice = null;
+
+// Carga las voces disponibles y selecciona la mejor para cada personaje
+function loadVoices() {
+  const voices = synth.getVoices();
+  if (!voices.length) return;
+
+  // Palabras que delatan una voz NEURONAL / natural (las de mejor calidad)
+  const NEURAL_HINTS = ['neural','natural','online','wavenet','premium','enhanced','google','microsoft'];
+  // Pistas de género en español
+  const FEMALE_HINTS = ['female','mujer','elvira','dalia','ximena','salome','salomé','sabina',
+                        'paloma','laura','lucia','lucía','sofia','sofía','helena','paulina',
+                        'mónica','monica','marisol','catalina','isabela'];
+  const MALE_HINTS   = ['male','hombre','jorge','álvaro','alvaro','carlos','gonzalo','tomas',
+                        'tomás','juan','diego','miguel','pablo','andres','andrés'];
+
+  const has = (name, list) => { name = name.toLowerCase(); return list.some(h => name.includes(h)); };
+
+  // Puntúa cada voz: español + calidad neuronal + voces "online" + género correcto.
+  // Penaliza las robóticas clásicas (eSpeak / compact).
+  function score(v, genderHints) {
+    let s = 0;
+    const n = v.name.toLowerCase();
+    const l = (v.lang || '').toLowerCase();
+    if (l.startsWith('es')) s += 40;                                   // habla español
+    if (l.startsWith('es-es') || l.startsWith('es-mx') || l.startsWith('es-us')) s += 6;
+    if (v.localService === false) s += 25;          // voces online = normalmente neuronales
+    if (has(n, NEURAL_HINTS)) s += 30;              // el nombre indica voz neuronal/natural
+    if (has(n, genderHints)) s += 18;               // coincide con el género del personaje
+    if (n.includes('espeak') || n.includes('compact') || n.includes('robot')) s -= 60; // robóticas
+    return s;
+  }
+
+  const ranked = hints => voices
+    .map(v => ({ v, s: score(v, hints) }))
+    .sort((a, b) => b.s - a.s);
+
+  const yueRank = ranked(FEMALE_HINTS);
+  const kaiRank = ranked(MALE_HINTS);
+
+  // YUE: la voz mejor puntuada (femenina/natural)
+  _yueVoice = (yueRank[0] && yueRank[0].s > 0) ? yueRank[0].v : voices[0];
+
+  // KAI: la mejor masculina/natural que NO sea la misma que YUE
+  const kaiBest = kaiRank.find(o => o.v !== _yueVoice && o.s > 0);
+  _kaiVoice = kaiBest ? kaiBest.v : (voices.find(v => v !== _yueVoice) || voices[0]);
+
+  console.log('[TTS] YUE:', _yueVoice && _yueVoice.name,
+              '| KAI:', _kaiVoice && _kaiVoice.name,
+              '| (online =', _yueVoice && _yueVoice.localService === false, ')');
+}
+
+// Cargar voces al iniciar (Chrome las carga asíncronamente)
+if (synth.onvoiceschanged !== undefined) {
+  synth.onvoiceschanged = loadVoices;
+}
+loadVoices();
+
+speechInProgress = false;
+let speechToken = 0;   // invalida callbacks de narraciones interrumpidas
+
+function stopSpeech() {
+  speechToken++;
+  synth.cancel();
+  speechInProgress = false;
+  hideBubbles();
+}
+
+function _speakWithVoice(text, voice, rate, pitch, onEnd) {
+  if (!text) { if (onEnd) onEnd(); return; }
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.voice = voice || null;
+  // Usa el idioma de la propia voz (no forzar es-ES: rompía las voces es-MX)
+  utt.lang = (voice && voice.lang) ? voice.lang : 'es-ES';
+  utt.rate = rate;
+  utt.pitch = (typeof pitch === 'number') ? pitch : 1.0;
+  utt.volume = 1.0;
+  utt.onend = () => { if (onEnd) onEnd(); };
+  utt.onerror = () => { if (onEnd) onEnd(); };
+  synth.speak(utt);
+}
+
+function hideBubbles() {
+  document.getElementById('stickyBubbleYue').classList.remove('show');
+  document.getElementById('stickyBubbleKai').classList.remove('show');
+}
+
+function showBubbleYue(text) {
+  const b = document.getElementById('stickyBubbleYue');
+  b.textContent = text;
+  b.classList.add('show');
+}
+function showBubbleKai(text) {
+  const b = document.getElementById('stickyBubbleKai');
+  b.textContent = text;
+  b.classList.add('show');
+}
+
+function cleanTextForTTS(text) {
+  return text
+    .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{27BF}]/gu, '')
+    .replace(/[*_~`#►▸●◆]/g, '')
+    // ── Normalizar nombres en MAYÚSCULAS para que NO se deletreen ──
+    // El motor de voz lee "YUE" letra por letra (Y-U-E). Al convertirlo
+    // a forma capitalizada lo pronuncia como una palabra natural.
+    .replace(/\bYUE\b/gi, 'Yue')
+    .replace(/\bKAI\b/gi, 'Kai')
+    .replace(/\bNEXIA\b/gi, 'Nexia')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function toggleAudio() {
+  audioEnabled = !audioEnabled;
+  const btn = document.getElementById('audio-fab');
+  if (audioEnabled) {
+    btn.textContent = '🔊 Audio activado';
+    btn.classList.add('active');
+    const sec = getCurrentVisibleSection();
+    if (sec && sec !== lastSpokenSection) {
+      lastSpokenSection = sec;
+      speakSection(sec);
+    }
+  } else {
+    btn.textContent = '🔇 Activar audio de YUE y KAI';
+    btn.classList.remove('active');
+    stopSpeech();
+    lastSpokenSection = null;
+  }
+}
+
+function speakSection(sectionId) {
+  if (!audioEnabled) return;
+  const data = SECTION_AUDIO[sectionId];
+  if (!data) return;
+
+  stopSpeech();                 // corta cualquier narración previa (sube el token)
+  const myToken = speechToken;  // token propio de ESTA narración
+  speechInProgress = true;
+
+  // Asegurarse de que las voces estén cargadas
+  if (!_yueVoice && !_kaiVoice) loadVoices();
+
+  const yueText = cleanTextForTTS(data.yue);
+  const kaiText = cleanTextForTTS(data.kai);
+
+  // YUE habla primero — voz femenina: tono más alto y dulce, ritmo natural
+  showBubbleYue(data.yue);
+  _speakWithVoice(yueText, _yueVoice, 1.0, 1.06, () => {
+    if (myToken !== speechToken || !audioEnabled) return;  // fue interrumpida
+    hideBubbles();
+    setTimeout(() => {
+      if (myToken !== speechToken || !audioEnabled) return;
+      // KAI habla segundo — voz masculina: tono más grave y ritmo tranquilo
+      showBubbleKai(data.kai);
+      _speakWithVoice(kaiText, _kaiVoice, 0.97, 0.9, () => {
+        if (myToken !== speechToken) return;
+        hideBubbles();
+        speechInProgress = false;
+      });
+    }, 350);
+  });
+}
+
+// ══════════════════════════════════════════════
+// SCROLL — detectar sección visible + bajar/subir
+// ══════════════════════════════════════════════
+const SECTIONS_ORDER = ['hero','about','characters','functions','wellbeing','why','choose','vision','levels'];
+
+function getCurrentVisibleSection() {
+  let found = null;
+  for (const id of SECTIONS_ORDER) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.6 && rect.bottom > 0) {
+      found = id;
+    }
+  }
+  return found;
+}
+
+function initScrollWatcher() {
+  window.addEventListener('scroll', onScroll, { passive: true });
+}
+
+let sectionSwitchTimer = null;
+
+function onScroll() {
+  const currentY = window.scrollY;
+  const scrollingDown = currentY > lastScrollY;
+
+  if (scrollingDown && currentY > 50) {
+    hasScrolledDown = true;
+  }
+
+  // Si sube hasta arriba del todo (scrollY < 80) → silencio
+  if (currentY < 80) {
+    hasScrolledDown = false;
+    if (audioEnabled) {
+      stopSpeech();
+      lastSpokenSection = null;
+    }
+    lastScrollY = currentY;
+    return;
+  }
+
+  // Con audio activo y ya habiendo bajado: narrar la sección visible
+  // automáticamente en cuanto cambia (interrumpe la anterior).
+  if (audioEnabled && hasScrolledDown) {
+    const sec = getCurrentVisibleSection();
+    if (sec && sec !== lastSpokenSection) {
+      // Pequeño retardo: solo narra cuando te quedas en la sección,
+      // así no se corta si pasas rápido de largo.
+      clearTimeout(sectionSwitchTimer);
+      sectionSwitchTimer = setTimeout(() => {
+        const now = getCurrentVisibleSection();
+        if (now && now !== lastSpokenSection && audioEnabled) {
+          lastSpokenSection = now;
+          speakSection(now);   // speakSection ya corta lo anterior
+        }
+      }, 200);
+    }
+  }
+
+  lastScrollY = currentY;
+}
+
+// ══════════════════════════════════════════════
+// GUIDES (burbujas de los mini avatares — sin audio)
+// ══════════════════════════════════════════════
+function initGuides() {
+  // Los guideYue / guideKai ya no se usan para audio; los sticky hacen ese rol
+  // Mantenemos los mini-avatares de la esquina como decoración opcional
+  // (ya existen en el HTML original como #guideYue / #guideKai)
+  // Los ocultamos para no duplicar con los sticky
+  const gy = document.getElementById('guideYue');
+  const gk = document.getElementById('guideKai');
+  if (gy) gy.style.display = 'none';
+  if (gk) gk.style.display = 'none';
+}
+
+// ══════════════════════════════════════════════
+// SCROLL REVEAL
+// ══════════════════════════════════════════════
+function initScrollReveal() {
+  const els = document.querySelectorAll('.scroll-reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  els.forEach(el => obs.observe(el));
+}
+
+// ══════════════════════════════════════════════
+// PARTICLES
+// ══════════════════════════════════════════════
+function initParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1;
+    const isYue = Math.random() > 0.5;
+    p.style.cssText = [
+      'width:' + size + 'px',
+      'height:' + size + 'px',
+      'left:' + Math.random() * 100 + '%',
+      'background:' + (isYue ? 'rgba(168,85,247,0.5)' : 'rgba(59,130,246,0.5)'),
+      'animation-duration:' + (Math.random() * 15 + 12) + 's',
+      'animation-delay:' + Math.random() * 15 + 's'
+    ].join(';');
+    container.appendChild(p);
+  }
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  let saved = null;
+  try { saved = localStorage.getItem('nexia_user'); } catch(e) {}
+  if (saved) {
+    try {
+      userData = JSON.parse(saved);
+      showWelcome(userData.name);
+    } catch(e) {
+      document.getElementById('register-screen').style.display = 'flex';
+    }
+  }
+  // Si no hay sesión, el register-screen ya está visible desde el HTML
+  initParticles();
+});
+</script>
+
+<!-- Movimiento + aura por personaje (según su "voz") -->
+<script>
+(function () {
+  // YUE -> nx-yue-img (morado, flotación suave) | KAI -> nx-kai-img (azul, firme)
+  function aplicarAnimaciones() {
+    document.querySelectorAll('img').forEach(function (img) {
+      var src = (img.getAttribute('src') || '').toLowerCase();
+      if (src.indexOf('yue') !== -1)      img.classList.add('nx-yue-img');
+      else if (src.indexOf('kai') !== -1) img.classList.add('nx-kai-img');
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', aplicarAnimaciones);
+  } else {
+    aplicarAnimaciones();
+  }
+})();
+</script>
+</body>
+</html>
